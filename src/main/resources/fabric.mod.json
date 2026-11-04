@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "old_content",
+  "version": "${version}",
+  "name": "Old Content",
+  "description": "Type /old for recreations of Minecraft's unused ruby, quiver, and early gear block.",
+  "authors": ["Old Content Team"],
+  "license": "MIT",
+  "icon": "assets/old_content/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["dev.oldcontent.OldContent"]
+  },
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "1.20.1",
+    "java": ">=17",
+    "fabric-api": "*"
+  }
+}

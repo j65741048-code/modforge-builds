@@ -1,0 +1,12 @@
+{
+  "item.old_content.ruby": "Forgotten Ruby",
+  "item.old_content.quiver": "Old Quiver",
+  "block.old_content.gear": "Early Gear",
+  "message.old_content.kit": "Old content unlocked! Received 16 rubies, a quiver, 16 gears and 64 arrows. Use the quiver to store arrows; sneak-use to retrieve them. Gears are decorative. Full inventory? Check the ground!",
+  "message.old_content.store": "Stored %s arrows. Quiver: %s/64",
+  "message.old_content.withdraw": "Retrieved %s arrows.",
+  "tooltip.old_content.quiver.count": "Arrows: %s/64",
+  "tooltip.old_content.quiver.store": "Use: store ordinary arrows from your inventory",
+  "tooltip.old_content.quiver.withdraw": "Sneak + use: retrieve all stored arrows",
+  "tooltip.old_content.quiver.bow": "Retrieve arrows before firing a bow."
+}
