@@ -1,0 +1,34 @@
+name: build-mod
+on:
+  push:
+    branches: ['mod/**']
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - id: cfg
+        run: |
+          echo "java=$(jq -r .java modforge.json)" >> $GITHUB_OUTPUT
+          echo "gradle=$(jq -r .gradle modforge.json)" >> $GITHUB_OUTPUT
+          echo "jar=$(jq -r .jarName modforge.json)" >> $GITHUB_OUTPUT
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ steps.cfg.outputs.java }}
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: ${{ steps.cfg.outputs.gradle }}
+      - name: Build
+        run: gradle build --no-daemon --stacktrace
+      - name: Publish jar
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          JAR=$(find build/libs -maxdepth 1 -name '*.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar' ! -name '*-dev*.jar' ! -name '*-api.jar' | head -1)
+          if [ -z "$JAR" ]; then echo "No jar produced"; exit 1; fi
+          cp "$JAR" "${{ steps.cfg.outputs.jar }}"
+          gh release create "b-${{ github.run_id }}" "${{ steps.cfg.outputs.jar }}" --target "$GITHUB_SHA" --title "${{ steps.cfg.outputs.jar }}" --notes "Built by ModForge"
