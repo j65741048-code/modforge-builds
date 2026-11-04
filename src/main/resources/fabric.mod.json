@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "debug_stash",
+  "version": "${version}",
+  "name": "Debug Stash",
+  "description": "Adds /Debug and /debug for unused-mob eggs and normally unobtainable items and blocks. Requires operator permission level 2.",
+  "authors": ["Debug Stash Team"],
+  "license": "MIT",
+  "icon": "assets/debug_stash/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["dev.debugstash.DebugStash"]
+  },
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "1.20.1",
+    "java": ">=17",
+    "fabric-api": "*"
+  }
+}

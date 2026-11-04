@@ -1,0 +1,5 @@
+{
+  "java": "17",
+  "gradle": "8.6",
+  "jarName": "debug_stash-fabric-1.20.1.jar"
+}
