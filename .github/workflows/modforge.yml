@@ -1,0 +1,64 @@
+name: modforge-build
+on:
+  push:
+    branches: ['build/**']
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read config
+        id: cfg
+        run: |
+          echo "kind=$(jq -r '.kind' modforge.json)" >> "$GITHUB_OUTPUT"
+          echo "java=$(jq -r '.java // 21' modforge.json)" >> "$GITHUB_OUTPUT"
+          echo "gradle=$(jq -r '.gradle // "8.10"' modforge.json)" >> "$GITHUB_OUTPUT"
+          echo "name=$(jq -r '.name' modforge.json)" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-java@v4
+        if: steps.cfg.outputs.kind == 'java'
+        with:
+          distribution: temurin
+          java-version: ${{ steps.cfg.outputs.java }}
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.cfg.outputs.kind == 'java'
+        with:
+          gradle-version: ${{ steps.cfg.outputs.gradle }}
+      - name: Build Java mod
+        if: steps.cfg.outputs.kind == 'java'
+        working-directory: mod
+        run: |
+          set -o pipefail
+          gradle build --no-daemon --stacktrace -x test
+          mkdir -p ../out
+          find build/libs -name '*.jar' ! -name '*-sources.jar' ! -name '*-dev*.jar' ! -name '*-javadoc.jar' -exec cp {} ../out/ \;
+          ls ../out/*.jar
+      - name: Install Horizon tools
+        if: steps.cfg.outputs.kind == 'hmod'
+        run: |
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+          cargo binstall -y --git https://github.com/horizon-rust/horizon cargo-horizon-mod || cargo install --git https://github.com/horizon-rust/horizon cargo-horizon-mod
+      - name: Build .hmod
+        if: steps.cfg.outputs.kind == 'hmod'
+        working-directory: mod
+        run: |
+          cargo horizon-mod build
+          for f in target/horizon-mod/*.hmod; do cargo horizon-mod check "$f"; done
+          mkdir -p ../out && cp target/horizon-mod/*.hmod ../out/
+      - name: Build .mcaddon
+        if: steps.cfg.outputs.kind == 'mcaddon'
+        working-directory: mod
+        run: |
+          fail=0
+          while IFS= read -r -d '' f; do
+            if ! sed -e 's://[^"]*$::' "$f" | jq empty 2>/dev/null; then echo "error: invalid JSON in $f"; jq empty "$f" || true; fail=1; fi
+          done < <(find . -name '*.json' -print0)
+          test -f behavior_pack/manifest.json || { echo "error: behavior_pack/manifest.json missing"; fail=1; }
+          [ $fail -eq 0 ]
+          mkdir -p ../out
+          zip -r "../out/${{ steps.cfg.outputs.name }}.mcaddon" behavior_pack $( [ -d resource_pack ] && echo resource_pack )
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mod-output
+          path: out/
+          if-no-files-found: error
