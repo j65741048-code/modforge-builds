@@ -1,0 +1,18 @@
+{
+  "railpalette.painted_bogey": "Bogey wheels painted %s",
+  "railpalette.painted_track": "Track painted %s",
+  "railpalette.queued": "Railway painting queued: %s. Branches and curves are included.",
+  "railpalette.complete": "Railway painting finished: %s track blocks painted.",
+  "railpalette.failed": "Railway painting stopped because a track integration failed. See the server log.",
+  "railpalette.queue_full": "You already have the maximum number of queued railway painting jobs.",
+  "railpalette.already": "That is already this color.",
+  "railpalette.status": "Your railway jobs: %s; processed track blocks: %s; pending track blocks: %s.",
+  "railpalette.cancelled": "Cancelled %s painting jobs. Tracks already painted keep their colors.",
+  "railpalette.jobs": "Server railway jobs: %s.",
+  "railpalette.tooltip.bogey": "Use on a Create bogey to paint its wheels.",
+  "railpalette.tooltip.track": "Use on tracks to paint; sneak-use paints the connected railway.",
+  "railpalette.configuration.tracksPerTick": "Track blocks processed per server tick",
+  "railpalette.configuration.chunkLoadsPerTick": "Maximum railway chunk loads per tick",
+  "railpalette.configuration.jobsPerPlayer": "Maximum queued painting jobs per player",
+  "railpalette.configuration.consumeDye": "Consume one dye per painting action"
+}
